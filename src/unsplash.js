@@ -56,7 +56,19 @@ export async function getImageInfoByRequest(requestParamString, accessToken) {
 		return null;
 	}
 
-	const rawUrl = (await response.json()).urls.raw;
+	let responseJson;
+
+	try {
+		responseJson = await response.json();
+	} catch {
+		return null;
+	}
+
+	const rawUrl = responseJson?.urls?.raw;
+
+	if (!rawUrl) {
+		return null;
+	}
 
 	const match = Constants.Unsplash.IMAGE_URL_PATTERN.exec(rawUrl);
 
