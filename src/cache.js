@@ -5,7 +5,7 @@
  */
 
 
-import {Constants} from "./constants.js";
+import {CONSTANTS} from "./constants.js";
 import {
 	getNextHourUnix,
 	getNextMidnightUnix,
@@ -14,12 +14,19 @@ import {
 
 async function generateStringSHA256(str) {
 	return [...new Uint8Array(
-		await crypto.subtle.digest("SHA-256", new TextEncoder().encode(str)),
-	)].map(b => b.toString(16).padStart(2, "0")).join("");
+		await crypto.subtle.digest(
+			"SHA-256",
+			new TextEncoder().encode(str)
+		),
+	)].map(b =>
+		b.toString(16).padStart(2, "0"),
+	).join("");
 }
 
 export async function generateCacheKey(requestParamString) {
-	return await generateStringSHA256(requestParamString);
+	const sha256Hash = await generateStringSHA256(requestParamString);
+
+	return `unsplash_image:${sha256Hash}`;
 }
 
 export async function getImageInfoFromCache(cacheKV, cacheKey) {
@@ -28,8 +35,8 @@ export async function getImageInfoFromCache(cacheKV, cacheKey) {
 		return null;
 	}
 
-	const imageInfoArray = cacheValue.split(Constants.Cache.IMAGE_INFO_SEPARATOR);
-	if (imageInfoArray.length !== Constants.Cache.IMAGE_INFO_NUMBER) {
+	const imageInfoArray = cacheValue.split(";");
+	if (imageInfoArray.length !== 3) {
 		return null;
 	}
 

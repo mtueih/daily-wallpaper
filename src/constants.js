@@ -5,7 +5,7 @@
  */
 
 
-export const Constants = {
+export const CONSTANTS = {
 	Unsplash: {
 		API_URL: "https://api.unsplash.com/photos/random",
 		RATE_LIMIT_PER_HOUR: 50,
